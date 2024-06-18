@@ -125,10 +125,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   custom_data = base64encode(templatefile("${path.module}/init.tpl", {
-    user       = var.admin_username,
-    caddy     = var.caddy,
+    user           = var.admin_username,
+    caddy          = var.caddy,
     docker_compose = file("${path.module}/docker-compose.caddy.yml"),
-    docker_env = file("${path.module}/.env")
+    docker_env     = file("${path.module}/.env")
   }))
 }
 

@@ -1,0 +1,52 @@
+name: 'Lint'
+
+on:
+  pull_request:
+    branches:
+      - main
+
+
+permissions:
+  security-events: write
+  contents: read 
+  actions: read 
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+  
+jobs:
+  lint:
+    name: 'Opentofu Lint and Tests'
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Opentofu CLI and configure the Opentofu CLI configuration file with a Opentofu Cloud user API token
+    - name: Setup Opentofu
+      uses: opentofu/setup-opentofu@v1
+
+    # Checks that all Opentofu configuration files adhere to a canonical format
+    - name: Opentofu Format
+      run: tofu fmt -check -recursive
+
+    
+    - name: Setup TFLint 
+      uses: terraform-linters/setup-tflint@v4
+      with:
+        tflint_version: v0.50.3
+
+    - name: Init TFLint
+      run: |
+        cp .tflint.hcl ~
+        tflint --init
+      env:
+        # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+        GITHUB_TOKEN: ${{ github.token }}
+
+    # Checks that all Opentofu configuration files are valid
+    - name: TFLint
+      run: cd modules && tflint --recursive -f compact
