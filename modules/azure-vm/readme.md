@@ -18,9 +18,9 @@ Azure VM is a good choice for deploying Onebusaway server, it provides a wide ra
 git clone https://github.com/OneBusAway/onebusaway-deployment.git
 ```
 
-2. Change the directory to `azure/vm`, you can use command
+2. Change the directory to `modules/azure-vm`, you can use command
 ```bash
-cd onebusaway-deployment/azure/vm
+cd onebusaway-deployment/modules/azure-vm
 ```
 3. Login to your Azure account using Azure CLI
 ```bash
