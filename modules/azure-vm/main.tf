@@ -2,36 +2,36 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "OneBusAway"
-  location = "East US"
+resource "azurerm_resource_group" "main" {
+  name     = var.resource_group_name
+  location = var.location
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "myVNet"
+resource "azurerm_virtual_network" "main" {
+  name                = var.vnet_name
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
 }
 
-resource "azurerm_subnet" "subnet" {
-  name                 = "mySubnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+resource "azurerm_subnet" "main" {
+  name                 = var.subnet_name
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-resource "azurerm_public_ip" "public_ip" {
-  name                = "myPublicIP"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_public_ip" "main" {
+  name                = var.public_ip_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = "myNSG"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_network_security_group" "main" {
+  name                = var.nsg_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
 
   security_rule {
     name                       = "HTTP"
@@ -82,34 +82,54 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-resource "azurerm_network_interface" "ni" {
-  name                = "myNIC"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_network_interface" "main" {
+  name                = var.nic_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
 
   ip_configuration {
     name                          = "myNICConfig"
-    subnet_id                     = azurerm_subnet.subnet.id
+    subnet_id                     = azurerm_subnet.main.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.public_ip.id
+    public_ip_address_id          = azurerm_public_ip.main.id
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "sg_association" {
-  network_interface_id      = azurerm_network_interface.ni.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+resource "azurerm_network_interface_security_group_association" "main" {
+  network_interface_id      = azurerm_network_interface.main.id
+  network_security_group_id = azurerm_network_security_group.main.id
 }
 
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                            = "OBA"
-  resource_group_name             = azurerm_resource_group.rg.name
-  location                        = azurerm_resource_group.rg.location
-  size                            = "Standard_B2s"
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_sensitive_file" "private_key" {
+  content  = tls_private_key.ssh_key.private_key_pem
+  filename = "${path.module}/ssh/id_rsa"
+}
+
+resource "local_file" "public_key" {
+  content  = tls_private_key.ssh_key.public_key_openssh
+  filename = "${path.module}/ssh/id_rsa.pub"
+}
+
+resource "azurerm_linux_virtual_machine" "main" {
+  name                            = var.vm_name
+  resource_group_name             = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
+  size                            = var.size
   admin_username                  = var.admin_username
-  admin_password                  = var.admin_password
-  disable_password_authentication = false
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = tls_private_key.ssh_key.public_key_openssh
+  }
+
   network_interface_ids = [
-    azurerm_network_interface.ni.id,
+    azurerm_network_interface.main.id,
   ]
 
   os_disk {
@@ -132,10 +152,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }))
 }
 
-output "ip_address" {
-  value = azurerm_network_interface.ni.private_ip_address
-}
+# remove ssh keys after destroy
+resource "null_resource" "remove_ssh_keys" {
+  triggers = {
+    always_run = timestamp()
+  }
 
-output "public_ip_address" {
-  value = azurerm_public_ip.public_ip.ip_address
+  provisioner "local-exec" {
+    command = "rm -f ${path.module}/ssh/id_rsa ${path.module}/ssh/id_rsa.pub"
+    when    = destroy
+  }
 }
