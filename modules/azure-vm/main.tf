@@ -155,7 +155,7 @@ resource "azurerm_linux_virtual_machine" "main" {
 # remove ssh keys after destroy
 resource "null_resource" "remove_ssh_keys" {
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
