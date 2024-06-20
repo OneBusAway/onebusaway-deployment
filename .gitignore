@@ -38,6 +38,8 @@ terraform.rc
 
 # SSH Keys
 *.pem
+id_rsa
+id_rsa.pub
 
 # Backup files
 *.bak
