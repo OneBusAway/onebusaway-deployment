@@ -107,13 +107,14 @@ resource "local_sensitive_file" "private_key" {
   filename = "${path.module}/ssh/id_rsa"
 }
 
-# resource "null_resource" "set_permission" {
-#   depends_on = [local_sensitive_file.private_key]
-#
-#   provisioner "local-exec" {
-#     command = "chmod 0600 ${local_sensitive_file.private_key.filename}"
-#   }
-# }
+# Only use this resource if you are using Linux or MacOS
+resource "null_resource" "set_permission" {
+  depends_on = [local_sensitive_file.private_key]
+
+  provisioner "local-exec" {
+    command = "chmod 0600 ${local_sensitive_file.private_key.filename}"
+  }
+}
 
 resource "local_file" "public_key" {
   content  = tls_private_key.ssh_key.public_key_openssh

@@ -34,7 +34,7 @@ tofu init
 cp .env.example .env
 ```
 
-6. Modify the `.env` and `variables.tf` file according to your needs. You can modify `DOMAIN` to your own domain, this will be used to generate SSL certificate by [Caddy](https://caddyserver.com/). If you want to configure your own certs instead of automatic HTTPS, you can leave `caddy` blank.
+6. Modify the `.env` and `variables.tf` file according to your needs. You can modify `DOMAIN` to your own domain, this will be used to generate SSL certificate by [Caddy](https://caddyserver.com/). If you want to configure your own certs instead of automatic HTTPS, you can leave `caddy` blank, you should also check `main.tf` file to make sure it works with your OS.
 
 7. Deploy the project
 ```bash
