@@ -143,9 +143,9 @@ resource "null_resource" "remove_ssh_keys" {
     always_run = timestamp()
   }
 
-  # replace `rm` with `del` if you are using Windows
+  # replace with `del ${path.module}\\ssh\\id_rsa ${path.module}\\ssh\\id_rsa.pub` if you are using Windows
   provisioner "local-exec" {
-    command = "rm ${path.module}\\ssh\\id_rsa ${path.module}\\ssh\\id_rsa.pub"
+    command = "rm -f ${path.module}/ssh/id_rsa ${path.module}/ssh/id_rsa.pub"
     when    = destroy
   }
 }
