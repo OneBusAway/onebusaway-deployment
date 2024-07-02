@@ -71,14 +71,14 @@ resource "google_compute_instance" "main" {
   }
 
   network_interface {
-    network       = google_compute_network.main.id
-    subnetwork    = google_compute_subnetwork.main.id
+    network    = google_compute_network.main.id
+    subnetwork = google_compute_subnetwork.main.id
     access_config {
       nat_ip = google_compute_address.main.address
     }
   }
 
-  metadata_startup_script = "${data.template_file.main.rendered}"
+  metadata_startup_script = data.template_file.main.rendered
 
   metadata = {
     ssh-keys = "${var.admin_username}:${tls_private_key.ssh_key.public_key_openssh}"
