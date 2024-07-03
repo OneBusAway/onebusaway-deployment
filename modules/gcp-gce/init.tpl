@@ -19,7 +19,7 @@ echo "${docker_env}" > .env
 
 
 # onebusaway-api-webapp depends on mysql, normally this will handle by docker-compose
-# but in Azure, the mysql container will not be ready when onebusaway-api-webapp starts
+# sometimes, the mysql container will not be ready when onebusaway-api-webapp starts
 # which leads to the error `Access to DialectResolutionInfo cannot be null when 'hibernate.dialect' not set`
 # so we need to start mysql container first
 docker-compose -f docker-compose.prod.yml up -d oba_database
