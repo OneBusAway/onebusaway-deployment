@@ -3,15 +3,15 @@ This repo is using [Opentofu](https://opentofu.org/) and other tools to create c
 
 ## Platform Support Status
 
-|                       | VM          | Docker          | K8s          |
-|-----------------------|-------------|-----------------|--------------|
-| Microsoft Azure       | VM ✅        | ACI 🚧          | AKS 🔲       |
-| Amazon Web Services   | EC2 ✅       | ECS 🚧          | EKS 🔲       |
-| Google Cloud Platform | GCE ✅       | GAE 🚧          | GKE 🔲       |
-| Render                | ❌           | DOCKER ✅(See 1) | ❌            |
-| Heroku                | ❌           | HCR 🔲          | ❌            |
-| DigitalOcean          | Droplets 🔲 | CR 🔲           | DOKS 🔲      |
-| Native K8s            | ❌           | ❌               | K8S ✅(See 2) |
+|                       | VM          | Docker            | K8s          |
+|-----------------------|-------------|-------------------|--------------|
+| Microsoft Azure       | VM ✅        | ACI ✅             | AKS 🔲       |
+| Amazon Web Services   | EC2 ✅       | ECS(Fargate) ✅    | EKS 🔲       |
+| Google Cloud Platform | GCE ✅       | Cloud Run ✅       | GKE 🔲       |
+| Render                | ❌           | DOCKER ✅🚧(See 1) | ❌            |
+| Heroku                | ❌           | HCR 🚧            | ❌            |
+| DigitalOcean          | Droplets 🚧 | CR 🚧             | DOKS 🔲      |
+| Native K8s            | ❌           | ❌                 | K8S ✅(See 2) |
 
 The following icons are used to represent the status of support for each platform:
 - ✅： completed
