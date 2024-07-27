@@ -4,7 +4,6 @@ container_name   = "onebusaway-api-server"
 container_image  = "ghcr.io/onebusaway/onebusaway-api-webapp:latest"
 container_cpu    = 2048
 container_memory = 4096
-log_group_name   = "/ecs/oba-container-logs"
 service_name     = "oba-service"
 
 env_var_tz                     = "America/Toronto"

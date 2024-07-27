@@ -28,11 +28,6 @@ variable "container_memory" {
   type        = number
 }
 
-variable "log_group_name" {
-  description = "The name of the log group for container logs"
-  type        = string
-}
-
 variable "service_name" {
   description = "The name of the ECS service"
   type        = string

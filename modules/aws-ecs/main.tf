@@ -4,7 +4,6 @@ provider "aws" {
 
 locals {
   liveness_probe_path                  = "/onebusaway-api-webapp/api/where/current-time.json?key=org.onebusaway.iphone"
-  liveness_probe_port                  = 8080
   liveness_probe_initial_delay_seconds = 120
   liveness_probe_period_seconds        = 30
 }
