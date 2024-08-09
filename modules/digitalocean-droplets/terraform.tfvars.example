@@ -1,0 +1,7 @@
+do_token      = ""
+vm_name       = "OBA"
+region        = "nyc3"
+size          = "s-2vcpu-4gb"
+firewall_name = "oba-firewall"
+user          = "oba"
+caddy         = ""

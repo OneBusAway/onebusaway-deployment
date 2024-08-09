@@ -17,7 +17,7 @@ variable "username" {
 }
 
 variable "caddy" {
-  description = "Wheather to use Caddy or not, leave empty to disable"
+  description = "Whether to use Caddy or not, leave empty to disable"
   type        = string
   default     = "1"
 }
