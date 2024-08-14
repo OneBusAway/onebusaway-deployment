@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oba-database
+  namespace: {{ .Values.namespace }}
+spec:
+  serviceName: "oba-database"
+  replicas: {{ .Values.replicas.database }}
+  selector:
+    matchLabels:
+      app: oba-database
+  template:
+    metadata:
+      labels:
+        app: oba-database
+    spec:
+      containers:
+        - name: oba-database
+          image: {{ .Values.image.mysql.repository }}:{{ .Values.image.mysql.tag }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oba-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              value: oba_database
+            - name: MYSQL_USER
+              value: oba_user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oba-secrets
+                  key: MYSQL_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - "-h"
+                - "127.0.0.1"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - "-h"
+                - "127.0.0.1"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

@@ -1,0 +1,50 @@
+namespace: oba
+
+image:
+  mysql:
+    repository: mysql
+    tag: "8.3"
+  oba:
+    app:
+      repository: opentransitsoftwarefoundation/onebusaway-api-webapp
+      tag: "2.5.12-cs-v1.0.0"
+    bundler:
+      repository: opentransitsoftwarefoundation/onebusaway-bundle-builder
+      tag: "2.5.12-cs-v1.0.0"
+
+replicas:
+  database: 1
+  app: 1
+
+secrets:
+  MYSQL_ROOT_PASSWORD: "SW5zM2N1cmUh"
+  MYSQL_PASSWORD: "b2JhX3Bhc3N3b3Jk"
+  JDBC_PASSWORD: "b2JhX3Bhc3N3b3Jk"
+  GOOGLE_MAPS_API_KEY: ""
+
+config:
+  GTFS_URL: "https://unitrans.ucdavis.edu/media/gtfs/Unitrans_GTFS.zip"
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 3
+  cpuUtilizationPercentage: 80
+
+ingress:
+  enabled: true
+  host: example.oba.com
+  annotations: {}
+  tls: false
+  tlsSecret: ""
+
+env:
+  GTFS_URL: "https://opendata.burlington.ca/gtfs-rt/GTFS_Data.zip"
+  TEST_API_KEY: "test"
+  VEHICLE_POSITIONS_URL: "https://opendata.burlington.ca/gtfs-rt/GTFS_VehiclePositions.pb"
+  TRIP_UPDATES_URL: "https://opendata.burlington.ca/gtfs-rt/GTFS_TripUpdates.pb"
+  ALERTS_URL: "https://opendata.burlington.ca/gtfs-rt/GTFS_ServiceAlerts.pb"
+  REFRESH_INTERVAL: 30
+  AGENCY_ID: "Burlington"
+  TZ: "America/Toronto"
+  GOOGLE_MAPS_CHANNEL_ID: ""
+  GOOGLE_MAPS_CLIENT_ID: ""
