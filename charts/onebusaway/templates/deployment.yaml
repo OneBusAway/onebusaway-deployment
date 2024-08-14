@@ -1,0 +1,88 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oba-app-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicas.app }}
+  selector:
+    matchLabels:
+      app: oba-app
+  template:
+    metadata:
+      labels:
+        app: oba-app
+    spec:
+      initContainers:
+        - name: oba-bundler
+          image: {{ .Values.image.oba.bundler.repository }}:{{ .Values.image.oba.bundler.tag }}
+          env:
+            - name: GTFS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: oba-configs
+                  key: GTFS_URL
+          volumeMounts:
+            - mountPath: /bundle
+              name: bundle-volume
+      containers:
+        - name: oba-app
+          image: {{ .Values.image.oba.app.repository }}:{{ .Values.image.oba.app.tag }}
+          env:
+            - name: JDBC_URL
+              value: jdbc:mysql://oba-database.{{ .Values.namespace }}.svc.cluster.local:3306/oba_database
+            - name: JDBC_USER
+              value: oba_user
+            - name: JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oba-secrets
+                  key: JDBC_PASSWORD
+            - name: GTFS_URL
+              value: {{ .Values.env.GTFS_URL }}
+            - name: TEST_API_KEY
+              value: {{ .Values.env.TEST_API_KEY }}
+            - name: VEHICLE_POSITIONS_URL
+              value: {{ .Values.env.VEHICLE_POSITIONS_URL }}
+            - name: TRIP_UPDATES_URL
+              value: {{ .Values.env.TRIP_UPDATES_URL }}
+            - name: ALERTS_URL
+              value: {{ .Values.env.ALERTS_URL }}
+            - name: REFRESH_INTERVAL
+              value: "{{ .Values.env.REFRESH_INTERVAL }}"
+            - name: AGENCY_ID
+              value: {{ .Values.env.AGENCY_ID }}
+            - name: TZ
+              value: {{ .Values.env.TZ }}
+            - name: GOOGLE_MAPS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: oba-secrets
+                  key: GOOGLE_MAPS_API_KEY
+            - name: GOOGLE_MAPS_CHANNEL_ID
+              value: {{ .Values.env.GOOGLE_MAPS_CHANNEL_ID }}
+            - name: GOOGLE_MAPS_CLIENT_ID
+              value: {{ .Values.env.GOOGLE_MAPS_CLIENT_ID }}
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /bundle
+              name: bundle-volume
+          livenessProbe:
+            httpGet:
+              path: /onebusaway-api-webapp/api/where/current-time.json?key=org.onebusaway.iphone
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /onebusaway-api-webapp/api/where/current-time.json?key=org.onebusaway.iphone
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: bundle-volume
+          emptyDir: {}
