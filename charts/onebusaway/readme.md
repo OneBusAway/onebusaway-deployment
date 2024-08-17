@@ -19,11 +19,9 @@ version.BuildInfo{Version:"v3.14.3", GitCommit:"f03cc04caaa8f6d7c3e67cf918929150
 
 RUN the following command to install Ingress Nginx:
 ```bash
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-
-helm repo update
-
-helm install nginx-ingress ingress-nginx/ingress-nginx
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
 ```
 
 3. Configure your domain
@@ -35,13 +33,13 @@ kubectl get svc -n ingress-nginx
 
 4. Configure the application
 
-Modify the `charts/values.yaml` file to configure the application. You can find the parameters meaning in [onebusaway-docker](https://github.com/OneBusAway/onebusaway-docker/#deployment-parameters).
+Modify the `onebusaway/values.yaml` file to configure the application. You can find the parameters meaning in [onebusaway-docker](https://github.com/OneBusAway/onebusaway-docker/#deployment-parameters).
 
 5. Deploy the application
 
 You can use this command to deploy the application:
 ```bash
-helm install onebusaway charts/
+helm install onebusaway charts/onebusaway
 ```
 Then you can check the status of the deployment by running:
 ```bash

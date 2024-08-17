@@ -5,7 +5,7 @@ This repo is using [Opentofu](https://opentofu.org/) and other tools to create c
 
 |                       | VM         | Docker          | K8s          |
 |-----------------------|------------|-----------------|--------------|
-| Microsoft Azure       | VM ✅       | ACI ✅           | AKS 🚧       |
+| Microsoft Azure       | VM ✅       | ACI ✅           | AKS ✅        |
 | Amazon Web Services   | EC2 ✅      | ECS(Fargate) ✅  | EKS 🚧       |
 | Google Cloud Platform | GCE ✅      | Cloud Run ✅     | GKE 🚧       |
 | Render                | ❌          | DOCKER ✅(See 1) | ❌            |

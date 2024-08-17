@@ -26,12 +26,17 @@ spec:
           volumeMounts:
             - mountPath: /bundle
               name: bundle-volume
+
+        - name: wait-for-db
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z -v -w30 oba-database 3306; do echo "Waiting for database..."; sleep 5; done' ]
+
       containers:
         - name: oba-app
           image: {{ .Values.image.oba.app.repository }}:{{ .Values.image.oba.app.tag }}
           env:
             - name: JDBC_URL
-              value: jdbc:mysql://oba-database.{{ .Values.namespace }}.svc.cluster.local:3306/oba_database
+              value: jdbc:mysql://oba-database:3306/oba_database
             - name: JDBC_USER
               value: oba_user
             - name: JDBC_PASSWORD
@@ -39,8 +44,6 @@ spec:
                 secretKeyRef:
                   name: oba-secrets
                   key: JDBC_PASSWORD
-            - name: GTFS_URL
-              value: {{ .Values.env.GTFS_URL }}
             - name: TEST_API_KEY
               value: {{ .Values.env.TEST_API_KEY }}
             - name: VEHICLE_POSITIONS_URL
@@ -73,14 +76,14 @@ spec:
             httpGet:
               path: /onebusaway-api-webapp/api/where/current-time.json?key=org.onebusaway.iphone
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /onebusaway-api-webapp/api/where/current-time.json?key=org.onebusaway.iphone
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
       volumes:

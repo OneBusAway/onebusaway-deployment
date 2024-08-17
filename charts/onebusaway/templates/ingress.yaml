@@ -8,6 +8,7 @@ metadata:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
     {{- end }}
 spec:
+  ingressClassName: nginx
   rules:
     - host: {{ .Values.ingress.host }}
       http:
