@@ -32,7 +32,7 @@ hpa:
 
 ingress:
   enabled: true
-  host: example.oba.com
+  host: oba.dmr.gg
   annotations: {}
   tls: false
   tlsSecret: ""

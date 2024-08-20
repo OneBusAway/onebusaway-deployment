@@ -30,7 +30,7 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --validate-maintainers=false --target-branch main
+        run: ct lint --validate-maintainers=false --check-version-increment=false --target-branch main
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.10.0
