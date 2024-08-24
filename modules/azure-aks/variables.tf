@@ -16,6 +16,24 @@ variable "aks_cluster_name" {
   type        = string
 }
 
+variable "node_pool_name" {
+  description = "The name of the node pool."
+  default     = "nodepool"
+  type        = string
+}
+
+variable "node_count" {
+  description = "The number of nodes in the node pool."
+  default     = 3
+  type        = number
+}
+
+variable "vm_size" {
+  description = "The size of the Virtual Machine."
+  default     = "Standard_DS2_v2"
+  type        = string
+}
+
 variable "dns_prefix" {
   description = "The DNS prefix for the AKS cluster."
   default     = "aks"

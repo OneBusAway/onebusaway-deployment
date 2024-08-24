@@ -1,0 +1,8 @@
+project_id       = "your-project-id"
+region           = "us-east1-b"
+gke_cluster_name = "my-gke-cluster"
+node_pool_name   = "primary-node-pool"
+node_count       = 2
+vm_size          = "e2-medium"
+node_tags        = ["production", "gke-node"]
+disk_size_gb     = 50

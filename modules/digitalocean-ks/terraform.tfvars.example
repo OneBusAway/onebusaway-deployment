@@ -1,0 +1,10 @@
+do_token         = "your_digitalocean_token_here"
+region           = "nyc1"
+k8s_cluster_name = "oba-cluster"
+k8s_version      = "1.30.2-do.0"
+node_pool_name   = "default-pool"
+node_count       = 3
+vm_size          = "s-2vcpu-4gb"
+node_tags        = ["doks-node"]
+min_nodes        = 1
+max_nodes        = 5
