@@ -31,12 +31,19 @@ az login
 tofu init
 ```
 
-5. Deploy the project
+5. Configure the cluster, you can run
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+Then modify the `terraform.tfvars` file to configure the cluster. You can find the meaning of each parameter in the `variables.tf` file.
+
+
+6. Deploy the project
 ```bash
 tofu apply
 ```
 
-6. Configure kubectl to connect to the AKS cluster
+7. Configure kubectl to connect to the AKS cluster
 ```bash
 az aks get-credentials --resource-group $(tofu output -raw resource_group_name) --name $(tofu output -raw aks_cluster_name)
 
@@ -44,19 +51,19 @@ az aks get-credentials --resource-group $(tofu output -raw resource_group_name) 
 kubectl config get-contexts
 ```
 
-7. Access Kubernetes Dashboard
+8. Access Kubernetes Dashboard
 ```bash
  az aks browse --resource-group $(tofu output -raw resource_group_name) --name $(tofu output -raw aks_cluster_name)
 ```
 
-8. Install Ingress Nginx
+9. Install Ingress Nginx
 
 Here is the [recommended way](https://kubernetes.github.io/ingress-nginx/deploy/#azure) to install Ingress Nginx on AKS:
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
 ```
 
-9. Configure your domain 
+10. Configure your domain 
 
 You should add a DNS record to your domain to point to the IP address of the Ingress Nginx controller. You can find the IP address by running:
 ```bash
@@ -64,7 +71,7 @@ kubectl get svc -n ingress-nginx
 ```
 If you are using Cloudflare, you can follow the instructions [here](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records).
 
-10. deploy OneBusAway server
+11. deploy OneBusAway server
 
 Modify the `onebusaway/values.yaml` file to configure the application. You can find the parameters meaning in [onebusaway-docker](https://github.com/OneBusAway/onebusaway-docker/#deployment-parameters).
 You can use this command to deploy the application:
@@ -76,6 +83,6 @@ Then you can check the status of the deployment by running:
 kubectl get pods -n oba
 ```
 
-11. Access the OneBusAway server
+12. Access the OneBusAway server
 
 You can access the OneBusAway server by visiting the domain you configured in step 9.

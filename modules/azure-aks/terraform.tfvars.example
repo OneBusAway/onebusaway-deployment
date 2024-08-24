@@ -1,0 +1,12 @@
+location = "East US"
+resource_group_name = "my-aks-rg"
+aks_cluster_name = "my-aks-cluster"
+node_pool_name = "primarynodepool"
+node_count = 5
+vm_size = "Standard_DS2_v2"
+dns_prefix = "myaks"
+tags = {
+  environment = "production"
+  owner       = "team-xyz"
+  project     = "project-abc"
+}
